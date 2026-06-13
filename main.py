@@ -8,7 +8,7 @@ from kivy.uix.button import Button
 from kivy.uix.popup import Popup
 from kivy.uix.floatlayout import FloatLayout
 
-from kivy.graphics import Color, Line
+from kivy.graphics import Color, Line, Ellipse
 
 from datetime import datetime
 
@@ -189,7 +189,14 @@ class FocusDeck(FloatLayout):
 
         )
 
-
+        # ====== NOTIFICATION DOT ======
+        with self.battery.canvas.after:
+            self.notification_color = Color(1, 0, 0, 1) 
+            self.notification_dot = Ellipse(size=(10, 10))
+            
+        # Bind pos, size, AND texture_size so the dot moves if the text gets wider!
+        self.battery.bind(pos=self.update_dot, size=self.update_dot, texture_size=self.update_dot)
+        # ==============================
 
 
         self.media=Label(
@@ -277,7 +284,22 @@ class FocusDeck(FloatLayout):
 
 
 
-
+    # ====== NOTIFICATION UPDATE ======
+    def update_dot(self, *args):
+        base = min(Window.width, Window.height)
+        dot_size = base * .012
+        self.notification_dot.size = (dot_size, dot_size)
+        
+        # Calculate exactly where the text ends inside the label
+        text_width = self.battery.texture_size[0]
+        text_right_edge = self.battery.center_x + (text_width / 2)
+        
+        # Positioned perfectly to the right of the "%" text, hovering slightly up
+        self.notification_dot.pos = (
+            text_right_edge + (base * .006), 
+            self.battery.center_y + (base * .005)
+        )
+    # =================================
 
 
     def resize(self,*a):
@@ -557,7 +579,8 @@ class FocusDeck(FloatLayout):
             "DISPLAY\n"
             "D - DARK MODE\n"
             "L - LIGHT MODE\n"
-            "Z - ZEN MODE\n\n"
+            "Z - ZEN MODE\n"
+            "RED DOT - NOTIFICATION\n\n"
 
             "SWITCH\n"
             "C/A KEEPS SESSION\n"
@@ -1097,7 +1120,6 @@ class FocusDeck(FloatLayout):
         elif c=="z":
 
             ZEN=not ZEN
-
 
 
 
