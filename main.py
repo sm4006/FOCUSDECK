@@ -4,6 +4,8 @@ from kivy.core.window import Window
 from kivy.core.text import LabelBase
 
 from kivy.uix.label import Label
+from kivy.uix.button import Button
+from kivy.uix.popup import Popup
 from kivy.uix.floatlayout import FloatLayout
 
 from kivy.graphics import Color, Line
@@ -14,6 +16,7 @@ import os
 import math
 import psutil
 import subprocess
+
 
 
 # ================= FONT =================
@@ -48,7 +51,6 @@ running=False
 # TIMER
 
 timer_stage="hours"
-
 timer_input=""
 
 timer_h=0
@@ -56,6 +58,8 @@ timer_m=0
 timer_s=0
 
 timer_time=0
+
+timer_ready=False
 
 
 
@@ -78,6 +82,9 @@ pomo_time=0
 
 pomo_phase="FOCUS"
 
+pomo_ready=False
+
+
 
 
 
@@ -90,6 +97,7 @@ class FocusDeck(FloatLayout):
 
 
         Window.fullscreen="auto"
+        self.popup=None
 
 
 
@@ -107,7 +115,9 @@ class FocusDeck(FloatLayout):
                 "center_x":.5,
                 "center_y":.72
             }
+
         )
+
 
 
 
@@ -123,7 +133,9 @@ class FocusDeck(FloatLayout):
                 "center_x":.5,
                 "center_y":.45
             }
+
         )
+
 
 
 
@@ -137,7 +149,9 @@ class FocusDeck(FloatLayout):
                 "x":.025,
                 "top":.97
             }
+
         )
+
 
 
 
@@ -155,7 +169,10 @@ class FocusDeck(FloatLayout):
                 "center_x":.5,
                 "top":.97
             }
+
         )
+
+
 
 
 
@@ -169,7 +186,9 @@ class FocusDeck(FloatLayout):
                 "right":.975,
                 "top":.97
             }
+
         )
+
 
 
 
@@ -185,7 +204,41 @@ class FocusDeck(FloatLayout):
                 "center_x":.5,
                 "y":.08
             }
+
         )
+
+
+
+
+
+        # HELP BUTTON
+
+
+        self.help_icon=Button(
+
+            text="?",
+
+            font_name=FONT,
+
+            background_color=(0,0,0,0),
+
+            size_hint=(None,None),
+
+            size=(70,70),
+
+            pos_hint={
+                "right":.98,
+                "y":.02
+            }
+
+        )
+
+
+        self.help_icon.bind(
+            on_press=self.show_help
+        )
+
+
 
 
 
@@ -196,7 +249,8 @@ class FocusDeck(FloatLayout):
             self.date,
             self.title,
             self.battery,
-            self.media
+            self.media,
+            self.help_icon
 
         ]:
 
@@ -205,7 +259,9 @@ class FocusDeck(FloatLayout):
 
 
 
+
         self.bind(size=self.resize)
+
 
 
         Window.bind(
@@ -222,7 +278,10 @@ class FocusDeck(FloatLayout):
 
 
 
+
+
     def resize(self,*a):
+
 
         base=min(
             Window.width,
@@ -234,7 +293,6 @@ class FocusDeck(FloatLayout):
 
         self.mode_label.font_size=base*.08
 
-
         self.date.font_size=base*.03
 
         self.title.font_size=base*.035
@@ -243,12 +301,21 @@ class FocusDeck(FloatLayout):
 
         self.media.font_size=base*.04
 
+        self.help_icon.font_size=base*.05
+
+
+
+
+
+
 
 
 
     def fmt(self,t):
 
+
         t=max(0,t)
+
 
         h=int(t//3600)
 
@@ -256,22 +323,33 @@ class FocusDeck(FloatLayout):
 
         s=int(t%60)
 
+
+
         return f"{h:02}:{m:02}:{s:02}"
+
+
+
 
 
 
 
     def battery_status(self):
 
+
         try:
 
             b=psutil.sensors_battery()
 
+
             if b:
 
-                return str(int(b.percent))+"%"
+                return str(
+                    int(b.percent)
+                )+"%"
+
 
             return "AC"
+
 
         except:
 
@@ -280,7 +358,12 @@ class FocusDeck(FloatLayout):
 
 
 
+
+
+
+
     def media_status(self):
+
 
         if ZEN:
 
@@ -289,21 +372,33 @@ class FocusDeck(FloatLayout):
             return
 
 
+
         try:
 
-            self.media.text=subprocess.check_output(
 
-            ["playerctl","metadata","title"],
+            title=subprocess.check_output(
 
-            stderr=subprocess.DEVNULL
+                [
+                    "playerctl",
+                    "metadata",
+                    "title"
+                ],
+
+                stderr=subprocess.DEVNULL
 
             ).decode().strip()
 
 
+
+            self.media.text=title
+
             self.media.opacity=1
 
 
+
+
         except:
+
 
             self.media.opacity=0
     # ================= ANALOG =================
@@ -324,6 +419,7 @@ class FocusDeck(FloatLayout):
             self.width,
             self.height
         )*.32
+
 
 
         col=(.85,.85,.85,1)
@@ -371,17 +467,21 @@ class FocusDeck(FloatLayout):
 
             hands=[
 
+
             (
-            (now.hour%12+now.minute/60)*30,
+            (now.hour%12+
+            now.minute/60)*30,
             .45,
             6
             ),
+
 
             (
             now.minute*6,
             .7,
             4
             ),
+
 
             (
             now.second*6,
@@ -390,6 +490,7 @@ class FocusDeck(FloatLayout):
             )
 
             ]
+
 
 
             for angle,length,width in hands:
@@ -406,12 +507,90 @@ class FocusDeck(FloatLayout):
                     cy,
 
                     cx+math.sin(a)*r*length,
+
                     cy+math.cos(a)*r*length
 
                     ],
 
                     width=width
                 )
+
+
+
+
+
+
+
+
+
+    # ================= HELP =================
+
+
+    def show_help(self,*args):
+
+
+        if ZEN:
+
+            return
+
+
+
+        content=Label(
+
+            text=(
+
+            "FOCUSDECK\n\n"
+
+            "CLOCKS\n"
+            "C  - CLOCK\n"
+            "A  - ANALOG CLOCK\n\n"
+
+            "TOOLS\n"
+            "T  - TIMER\n"
+            "S  - STOPWATCH\n"
+            "P  - POMODORO\n\n"
+
+            "CONTROL\n"
+            "SPACE - START / PAUSE\n"
+            "R  - RESET\n\n"
+
+            "DISPLAY\n"
+            "D - DARK MODE\n"
+            "L - LIGHT MODE\n"
+            "Z - ZEN MODE\n\n"
+
+            "SWITCH\n"
+            "C/A KEEPS SESSION\n"
+            "T/S/P RESETS SESSION\n\n"
+
+            "ESC - EXIT"
+
+            ),
+
+            font_name="Roboto",
+
+            font_size=28
+
+        )
+
+
+
+        self.popup=Popup(
+
+            title="",
+
+            content=content,
+
+            size_hint=(.45,.7),
+
+            auto_dismiss=True
+
+        )
+
+
+        self.popup.open()
+
+
 
 
 
@@ -425,20 +604,16 @@ class FocusDeck(FloatLayout):
 
         global running
 
-
         global timer_stage,timer_input
-
         global timer_h,timer_m,timer_s
-
         global timer_time
-
+        global timer_ready
 
         global stopwatch_time
 
-
         global pomo_stage,pomo_input
-
         global pomo_time
+        global pomo_ready
 
 
 
@@ -447,7 +622,6 @@ class FocusDeck(FloatLayout):
 
 
         timer_stage="hours"
-
         timer_input=""
 
 
@@ -455,10 +629,15 @@ class FocusDeck(FloatLayout):
         timer_m=0
         timer_s=0
 
+
         timer_time=0
+
+        timer_ready=False
+
 
 
         stopwatch_time=0
+
 
 
         pomo_stage="focus"
@@ -466,6 +645,11 @@ class FocusDeck(FloatLayout):
         pomo_input=""
 
         pomo_time=0
+
+        pomo_ready=False
+
+
+
 
 
 
@@ -478,15 +662,12 @@ class FocusDeck(FloatLayout):
 
 
         global timer_time
-
         global stopwatch_time
 
         global pomo_time
-
         global pomo_phase
 
         global running
-
 
 
 
@@ -501,6 +682,7 @@ class FocusDeck(FloatLayout):
 
         self.date.text=now.strftime("%b %d")
 
+
         self.battery.text=self.battery_status()
 
 
@@ -509,10 +691,12 @@ class FocusDeck(FloatLayout):
 
 
 
+
         if MODE=="clock":
 
 
             self.mode_label.text=""
+
 
             self.clock.opacity=1
 
@@ -543,26 +727,29 @@ class FocusDeck(FloatLayout):
         elif MODE=="timer":
 
 
-
             self.clock.opacity=1
 
 
 
-            if running:
+            if timer_ready:
 
 
                 self.mode_label.text="TIMER"
 
 
-                timer_time-=dt
+
+                if running:
 
 
-                if timer_time<=0:
+                    timer_time-=dt
 
 
-                    timer_time=0
 
-                    running=False
+                    if timer_time<=0:
+
+                        timer_time=0
+
+                        running=False
 
 
 
@@ -576,13 +763,7 @@ class FocusDeck(FloatLayout):
             else:
 
 
-
-                self.mode_label.text=(
-
-                    "SET "+timer_stage.upper()
-
-                )
-
+                self.mode_label.text="SET "+timer_stage.upper()
 
 
                 self.clock.text=(
@@ -601,11 +782,12 @@ class FocusDeck(FloatLayout):
 
 
 
+
+
         elif MODE=="stopwatch":
 
 
             self.clock.opacity=1
-
 
             self.mode_label.text="STOPWATCH"
 
@@ -626,8 +808,12 @@ class FocusDeck(FloatLayout):
 
 
 
+            self.clock.text=(
 
-            self.clock.text=f"{m:02}:{s:02}.{ms:02}"
+                f"{m:02}:{s:02}.{ms:02}"
+
+            )
+
 
 
 
@@ -643,36 +829,38 @@ class FocusDeck(FloatLayout):
 
 
 
-            if running:
+            if pomo_ready:
 
 
                 self.mode_label.text="POMODORO"
 
 
-                pomo_time-=dt
+
+                if running:
+
+
+                    pomo_time-=dt
 
 
 
-                if pomo_time<=0:
+                    if pomo_time<=0:
+
+
+                        if pomo_phase=="FOCUS":
+
+
+                            pomo_phase="BREAK"
+
+                            pomo_time=pomo_break
 
 
 
-                    if pomo_phase=="FOCUS":
+                        else:
 
 
-                        pomo_phase="BREAK"
+                            pomo_phase="FOCUS"
 
-                        pomo_time=pomo_break
-
-
-
-                    else:
-
-
-                        pomo_phase="FOCUS"
-
-                        pomo_time=pomo_focus
-
+                            pomo_time=pomo_focus
 
 
 
@@ -680,6 +868,7 @@ class FocusDeck(FloatLayout):
                 self.clock.text=self.fmt(
                     pomo_time
                 )
+
 
 
 
@@ -712,7 +901,13 @@ class FocusDeck(FloatLayout):
 
 
 
+
+
         self.theme()
+
+
+
+
 
 
 
@@ -731,9 +926,7 @@ class FocusDeck(FloatLayout):
             fg=(.82,.82,.82,1)
 
 
-
         else:
-
 
             Window.clearcolor=(1,1,1,1)
 
@@ -744,9 +937,12 @@ class FocusDeck(FloatLayout):
 
         for x in self.children:
 
+
             if hasattr(x,"color"):
 
                 x.color=fg
+
+
 
 
 
@@ -759,6 +955,12 @@ class FocusDeck(FloatLayout):
         self.date.opacity=show
 
         self.battery.opacity=show
+
+        self.media.opacity=show
+
+        self.mode_label.opacity=show
+
+        self.help_icon.opacity=show
 
 
 
@@ -773,22 +975,17 @@ class FocusDeck(FloatLayout):
 
 
         global MODE,LAST_TOOL
-
         global THEME,ZEN,running
 
 
         global timer_stage,timer_input
-
         global timer_h,timer_m,timer_s
-
-        global timer_time
+        global timer_time,timer_ready
 
 
         global pomo_stage,pomo_input
-
         global pomo_focus,pomo_break
-
-        global pomo_time,pomo_phase
+        global pomo_time,pomo_phase,pomo_ready
 
 
 
@@ -798,10 +995,22 @@ class FocusDeck(FloatLayout):
 
 
 
-
         if key==27:
 
-            App.get_running_app().stop()
+
+            if self.popup:
+
+
+                self.popup.dismiss()
+
+                self.popup=None
+
+
+            else:
+
+
+                App.get_running_app().stop()
+
 
 
 
@@ -811,11 +1020,7 @@ class FocusDeck(FloatLayout):
 
 
 
-            # ONLY RESET WHEN SWITCHING BETWEEN TOOLS
-
-
             if LAST_TOOL and LAST_TOOL!=c:
-
 
                 self.reset_sessions()
 
@@ -825,17 +1030,14 @@ class FocusDeck(FloatLayout):
 
 
 
-
             if c=="t":
 
                 MODE="timer"
 
 
-
             elif c=="s":
 
                 MODE="stopwatch"
-
 
 
             elif c=="p":
@@ -847,12 +1049,9 @@ class FocusDeck(FloatLayout):
 
 
 
-
         elif c=="a":
 
-
             MODE="analog"
-
 
             self.clock.opacity=0
 
@@ -863,7 +1062,6 @@ class FocusDeck(FloatLayout):
 
         elif c=="c":
 
-
             MODE="clock"
 
 
@@ -873,9 +1071,7 @@ class FocusDeck(FloatLayout):
 
         elif key==32:
 
-
             running=not running
-
 
 
 
@@ -884,9 +1080,7 @@ class FocusDeck(FloatLayout):
 
         elif c=="d":
 
-
             THEME="dark"
-
 
 
 
@@ -894,16 +1088,13 @@ class FocusDeck(FloatLayout):
 
         elif c=="l":
 
-
             THEME="light"
 
 
 
 
 
-
         elif c=="z":
-
 
             ZEN=not ZEN
 
@@ -912,14 +1103,9 @@ class FocusDeck(FloatLayout):
 
 
 
-
-
         elif c=="r":
 
-
             self.reset_sessions()
-
-
 
 
 
@@ -930,19 +1116,14 @@ class FocusDeck(FloatLayout):
         elif key==8:
 
 
-
             if MODE=="timer":
-
 
                 timer_input=timer_input[:-1]
 
 
-
             elif MODE=="pomodoro":
 
-
                 pomo_input=pomo_input[:-1]
-
 
 
 
@@ -957,16 +1138,14 @@ class FocusDeck(FloatLayout):
 
             if MODE=="timer":
 
-
                 timer_input+=c
-
-
 
 
             elif MODE=="pomodoro":
 
-
                 pomo_input+=c
+
+
 
 
 
@@ -982,31 +1161,21 @@ class FocusDeck(FloatLayout):
             if MODE=="timer":
 
 
-
-                value=int(
-                    timer_input or 0
-                )
-
+                value=int(timer_input or 0)
 
 
 
                 if timer_stage=="hours":
 
-
                     timer_h=value
-
                     timer_stage="minutes"
-
 
 
 
                 elif timer_stage=="minutes":
 
-
                     timer_m=value
-
                     timer_stage="seconds"
-
 
 
 
@@ -1027,8 +1196,9 @@ class FocusDeck(FloatLayout):
                     )
 
 
-                    running=True
+                    timer_ready=True
 
+                    running=True
 
 
 
@@ -1044,22 +1214,17 @@ class FocusDeck(FloatLayout):
             elif MODE=="pomodoro":
 
 
-
                 value=int(
                     pomo_input or 0
                 )*60
 
 
 
-
                 if pomo_stage=="focus":
-
 
                     pomo_focus=value
 
-
                     pomo_stage="break"
-
 
 
 
@@ -1068,15 +1233,13 @@ class FocusDeck(FloatLayout):
 
                     pomo_break=value
 
-
                     pomo_time=pomo_focus
-
 
                     pomo_phase="FOCUS"
 
+                    pomo_ready=True
 
                     running=True
-
 
 
 
@@ -1098,7 +1261,6 @@ class FocusDeckApp(App):
         self.title="FocusDeck"
 
         return FocusDeck()
-
 
 
 
