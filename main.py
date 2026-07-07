@@ -1,3 +1,7 @@
+APP_NAME = "FocusDeck"
+APP_VERSION = "1.0.0"
+APP_AUTHOR = "Shaurya Mehta"
+APP_COPYRIGHT = "Copyright © 2026 Shaurya Mehta"
 from kivy.app import App
 from kivy.clock import Clock
 from kivy.core.window import Window

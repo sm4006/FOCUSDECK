@@ -33,6 +33,7 @@ R - Reset
 D - Dark Mode  
 L - Light Mode  
 Z - Zen Mode  
+Red Dot - Notification Indicator
 
 ESC - Exit
 
