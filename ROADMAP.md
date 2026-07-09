@@ -1,46 +1,44 @@
 # FocusDeck Roadmap
 
-## Version 1.0
-- Initial public release
-- Windows executable
-- Linux release
-- GitHub release
+## Current Status
+
+FocusDeck v1.0.1 is considered feature complete and stable.
+
+The project is currently in maintenance mode.
 
 ---
 
-## Version 1.1
-- OLED protection mode
-- Settings persistence
-- Custom themes
-- App icon integration
+## Completed Features
+
+- OLED Digital Clock
+- Analog Clock
+- Pomodoro Timer
+- Stopwatch
+- Countdown Timer
+- Battery Percentage Indicator
+- Desktop Integration
+- Keyboard Shortcuts
+- Linux Installer Script
+- GitHub Release Distribution
+- OLED Application Icon
 
 ---
 
-## Version 1.2
-- Calendar integration
-- Focus statistics
-- Session history
+## Future Possibilities
+
+These ideas may be explored in future releases:
+
+- Windows Support
+- AppImage Distribution
+- Media Controls
+- Theme Engine
+- Spotify Integration
+- Calendar Integration
+- Ambient Mode
 
 ---
 
-## Version 2.0
-- Plugin support
-- Second Brain integration
-- Widget system
-- Cloud sync
+## Release History
 
----
-
-## Ideas
-- Formula 1 mode
-- Weather widget
-- Music visualizer
-- Multi-monitor support1. Custom notification icons 
-2. pop-up notifications 
-3. weather 
-4. custom fonts
-5. color palette
-6. volume slider vertical 
-7. Mobile App support 
-8. Screensaver Support
-9. sunrise/sunset dark mode light mode automation
+- v1.0.0 — Initial Release
+- v1.0.1 — Stable Release
