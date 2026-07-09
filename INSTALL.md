@@ -1,43 +1,62 @@
-# FocusDeck Installation Guide
+# Installation
 
-## Windows
+FocusDeck currently supports Linux distributions using the freedesktop desktop standard.
 
-### Method 1
-GitHub executable download.
+## Supported Distributions
 
-### Method 2
-Command Prompt installation.
+- Fedora
+- Ubuntu
+- Linux Mint
+- Debian
+- Pop!_OS
+- Arch Linux
+- EndeavourOS
+- Zorin OS
 
-### Method 3
-PowerShell installation.
 
-### Method 4
-Microsoft Store installation (planned).
+## Quick Install
 
----
+```bash
+curl -L https://raw.githubusercontent.com/sm4006/FOCUSDECK/main/install.sh -o install.sh
+chmod +x install.sh
+./install.sh
+```
 
-## Linux
+## What the installer does
 
-### Method 1
-Shell installation.
+The installer automatically:
 
-### Method 2
-GitHub release download.
-
----
-
-## Requirements
-
-### Development Version
-- Python 3.11+
-- Kivy
-- psutil
-
-### Release Version
-No additional dependencies required.
+- Downloads the latest FocusDeck release binary
+- Creates a desktop launcher
+- Installs the OLED application icon
+- Registers FocusDeck with the application menu
 
 ---
 
-## Notes
+## Installed Locations
 
-Installation instructions will be finalized before the first public release.
+| Component | Location |
+|-----------|----------|
+| Binary | ~/.local/share/focusdeck/ |
+| Desktop Entry | ~/.local/share/applications/ |
+| Icon | ~/.local/share/icons/hicolor/256x256/apps/ |
+
+---
+
+## Manual Launch
+
+If required, FocusDeck can be started manually:
+
+```bash
+~/.local/share/focusdeck/FocusDeck
+```
+
+---
+
+## Uninstall
+
+```bash
+rm -rf ~/.local/share/focusdeck
+rm ~/.local/share/applications/focusdeck.desktop
+rm ~/.local/share/icons/hicolor/256x256/apps/focusdeck.png
+```
