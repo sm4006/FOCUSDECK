@@ -1,27 +1,27 @@
 # Changelog
 
-## v1.0.0
+## v1.0.1 - July 2026
 
 ### Added
-- Digital Clock
-- Analog Clock
-- Timer
-- Stopwatch
-- Pomodoro Timer
-- Zen Mode
-- Media Display
-- Battery Indicator
-- Notification Indicator
-- Help Popup
-- Dark Mode
-- Light Mode
+- OLED application icon
+- Desktop launcher support
+- GitHub release distribution
+- Installer script
+- Bundled custom font support
 
 ### Fixed
-- Popup close handling using ESC
-- Session switching behavior
-- Stopwatch and Pomodoro conflicts
-- Notification dot positioning
+- Font packaging issue in executable builds
+- Month formatting issue
+- Application icon visibility issue
+- Installer release URL issue
 
-### Notes
-- Initial public release candidate.
+### Changed
+- Simplified branding
+- Removed light mode application icon
+- Improved release workflow
 
+---
+
+## v1.0.0
+
+Initial public release of FocusDeck.
