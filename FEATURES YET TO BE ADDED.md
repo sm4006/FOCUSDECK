@@ -7,3 +7,4 @@
 7. Mobile App support 
 8. Screensaver Support
 9. sunrise/sunset dark mode light mode automation
+10. 

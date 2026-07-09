@@ -1,3 +1,19 @@
+import subprocess
+
+MONTH_MAP = {
+    1: "Jan",
+    2: "Feb",
+    3: "March",
+    4: "April",
+    5: "May",
+    6: "June",
+    7: "July",
+    8: "Aug",
+    9: "Sep",
+    10: "Oct",
+    11: "Nov",
+    12: "Dec"
+}
 APP_NAME = "FocusDeck"
 APP_VERSION = "1.0.0"
 APP_AUTHOR = "Shaurya Mehta"
@@ -16,20 +32,27 @@ from kivy.graphics import Color, Line, Ellipse
 
 from datetime import datetime
 
-import os
 import math
 import psutil
 import subprocess
+import sys
+import os
 
+BASE_DIR = getattr(
+    sys,
+    "_MEIPASS",
+    os.path.dirname(os.path.abspath(__file__))
+)
+
+FONT_PATH = os.path.join(BASE_DIR, "fonts", "BebasNeue-Regular.ttf")
 
 
 # ================= FONT =================
 
-if os.path.exists("fonts/BebasNeue-Regular.ttf"):
-
+if os.path.exists(FONT_PATH):
     LabelBase.register(
         name="Fliqlo",
-        fn_regular="fonts/BebasNeue-Regular.ttf"
+        fn_regular=FONT_PATH
     )
 
     FONT="Fliqlo"
@@ -124,24 +147,17 @@ class FocusDeck(FloatLayout):
 
 
 
-
         self.clock=Label(
-
             text="",
-
             font_name=FONT,
-
             size_hint=(1,1),
-
+            halign="center",
+            valign="middle",
             pos_hint={
                 "center_x":.5,
                 "center_y":.45
             }
-
         )
-
-
-
 
         self.date=Label(
 
@@ -707,7 +723,7 @@ class FocusDeck(FloatLayout):
         now=datetime.now()
 
 
-        self.date.text=now.strftime("%b %d")
+        self.date.text = f"{MONTH_MAP[now.month]} {now.day:02d}"
 
 
         self.battery.text=self.battery_status()
