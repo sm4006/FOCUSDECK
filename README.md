@@ -1,60 +1,69 @@
-
 # FocusDeck
 
-Minimal ambient productivity dashboard inspired by Fliqlo.
+FocusDeck is a minimal OLED-inspired productivity dashboard built with Python and Kivy.
 
-Turn any screen into a beautiful focus station.
+Designed for OLED displays, secondary monitors, desk setups and distraction-free focus sessions.
+
+---
 
 ## Features
 
-- Digital Clock
+- OLED Digital Clock
 - Analog Clock
-- Custom Timer
+- Pomodoro Timer
 - Stopwatch
-- Pomodoro
-- Zen Mode
-- Dark / Light Theme
-- Battery Display
-- Media Detection
-- Keyboard Only Controls
-- Responsive UI
+- Countdown Timer
+- Battery Percentage Indicator
+- Fullscreen Interface
+- Keyboard Shortcuts
+- Desktop Integration
+- OLED Optimized Design
 
-## Controls
+---
 
-C - Clock  
-A - Analog Clock  
-T - Timer  
-S - Stopwatch  
-P - Pomodoro  
+## Installation
 
-SPACE - Start / Pause  
-R - Reset  
+```bash
+curl -L https://raw.githubusercontent.com/sm4006/FOCUSDECK/main/install.sh -o install.sh
+chmod +x install.sh
+./install.sh
+```
 
-D - Dark Mode  
-L - Light Mode  
-Z - Zen Mode  
-Red Dot - Notification Indicator
+---
 
-ESC - Exit
+## Keyboard Shortcuts
 
+| Key | Action |
+|-----|--------|
+| C | Digital Clock |
+| A | Analog Clock |
+| P | Pomodoro |
+| S | Stopwatch |
+| T | Timer |
+| SPACE | Start / Pause |
+| R | Reset Current Mode |
+| ? | Help Menu |
 
-## Built With
+---
 
-- Python
-- Kivy
-- psutil
-- playerctl
+## Screenshots
 
+Screenshots can be found inside:
 
-## Current Version
+```text
+RELEVANT_PICTURES/
+```
 
-v0.7 Stable Build
+---
 
+## Requirements
 
-## Future Plans
+- Linux
+- Python 3.12+
+- Kivy 2.x
 
-- Windows EXE
-- Linux AppImage
-- Android APK
-- More themes
-- Ambient modes
+---
+
+## License
+
+MIT License
